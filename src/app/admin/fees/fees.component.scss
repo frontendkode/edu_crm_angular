@@ -1,0 +1,60 @@
+.btn-purple {
+  background-color: #6f42c1;
+  border-color: #6f42c1;
+  color: white;
+
+  &:hover {
+    background-color: #59359a;
+    border-color: #59359a;
+    color: white;
+  }
+}
+
+.btn-outline-purple {
+  color: #6f42c1;
+  border-color: #6f42c1;
+
+  &:hover {
+    background-color: #6f42c1;
+    color: white;
+  }
+}
+
+.text-purple {
+  color: #6f42c1;
+}
+
+.bg-purple {
+  background-color: #6f42c1;
+}
+
+.extra-small {
+  font-size: 0.75rem;
+}
+
+.nav-pills {
+  .nav-link {
+    color: #6c757d;
+    border-radius: 8px;
+    font-weight: 500;
+    transition: all 0.2s;
+
+    &.active {
+      background-color: #6f42c1;
+      color: white;
+      box-shadow: 0 4px 10px rgba(111, 66, 193, 0.2);
+    }
+  }
+}
+
+.card {
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.table-hover tbody tr:hover {
+  background-color: rgba(111, 66, 193, 0.05);
+}
+
+.badge {
+  font-weight: 600;
+}
