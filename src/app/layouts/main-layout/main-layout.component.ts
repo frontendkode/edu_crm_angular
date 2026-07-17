@@ -5,10 +5,12 @@ import { AuthService } from '../../services/auth.service';
 import { StorageService } from '../../services/storage.service';
 import { AllApiService } from '../../services/all-api.service';
 import { PermissionService } from '../../services/permission.service';
+import { NotificationReminderService } from '../../services/notification-reminder.service';
+import { ReminderPopupComponent } from "../../shared/reminder-popup/reminder-popup.component";
 
 @Component({
   selector: 'app-main-layout',
-  imports: [SharedCommonModule, NotificationsComponent],
+  imports: [SharedCommonModule, NotificationsComponent, ReminderPopupComponent],
   templateUrl: './main-layout.component.html',
   styleUrl: './main-layout.component.scss',
 })
@@ -21,7 +23,8 @@ export class MainLayoutComponent implements OnInit {
     public auth: AuthService,
     private storage: StorageService,
     private api: AllApiService,
-    private permission: PermissionService
+    private permission: PermissionService,
+    private notificationReminderService: NotificationReminderService
   ) { }
 
   ngOnInit() {
@@ -47,7 +50,7 @@ export class MainLayoutComponent implements OnInit {
       badge: null,
     },
     { label: 'Students', icon: 'school', route: '/admin/students', badge: 0 },
-    { label: 'Login Manage', icon: 'school', route: '/admin/user-management', badge: 0 },
+    { label: 'Login Manage', icon: 'shield', route: '/admin/user-management', badge: 0 },
     {
       label: 'Student Attendance',
       icon: 'event_available',
@@ -100,6 +103,10 @@ export class MainLayoutComponent implements OnInit {
         response.responseObject.lead.length +
         response.responseObject.studentAttendance.length +
         response.responseObject.studentDueDays.length;
+      const leads = response.responseObject.lead;
+
+      this.notificationReminderService
+        .scheduleLeadReminders(leads);
     });
   }
 

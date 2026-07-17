@@ -549,7 +549,7 @@ export class StudentsComponent implements OnInit {
     return result;
   }
 
-
+  isMatch = (record: any) => ['Present', 'LPresent'].includes(record.attend);
   onGenerateAttendance() {
 
     const { classStartDate, classEndDate, classCount } = this.studentForm.value;

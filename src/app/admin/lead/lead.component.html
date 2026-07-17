@@ -156,13 +156,13 @@
               <td>{{ getCounselorName(lead.counselor) }}</td>
               <td>
                 {{ lead.activityLog?.length ? (lead?.activityLog[lead?.activityLog?.length - 1]?.createdAt |
-                date:'short') :
+                date:'dd MMM yy') :
                 '-' }}
               </td>
 
               <td>
                 <p>{{ lead.reminderLog?.length ? (lead?.reminderLog[lead?.reminderLog?.length - 1]?.reminderDate |
-                  date:'short') : '-' }}</p>
+                  date:'dd MMM yy') : '-' }}</p>
                 <p>{{ lead.reminderLog?.length ? lead?.reminderLog[lead?.reminderLog?.length - 1]?.description :
                   '-'}}</p>
               </td>
@@ -327,7 +327,9 @@
                 <ul class="list-group">
                   <li class="list-group-item" *ngFor="let rem of selectedLead?.reminderLog">
                     <strong>{{ rem.type | titlecase }}</strong> - {{ rem.description }}
-                    <small class="text-muted d-block">Reminder: {{ rem.reminderDate | date:'short' }}</small>
+                    <small class="text-muted d-block">Reminder: {{ rem.reminderDate | date:'dd MMM yy' }}</small>
+                    <small class="text-muted d-block">Time: {{ '2020-01-01T'+rem.reminderTime | date:'hh:mm a'
+                      }}</small>
                   </li>
                 </ul>
               </div>

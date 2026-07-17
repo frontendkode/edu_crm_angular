@@ -206,31 +206,61 @@
                           <small class="text-muted">{{ s.shift }}</small>
                         </td>
                         <td>{{ s.classCount }}</td>
-                        <td class="text-success">{{ s.Atsummary.present }}</td>
-                        <td class="text-danger">{{ s.Atsummary.absent }}</td>
-                        <td class="text-warning">{{ s.Atsummary.late }}</td>
-                        <td class="text-primary">{{ s.Atsummary.none }}</td>
+                        <!-- Present Status (Matches 'Present' and 'LPresent') -->
+                        <td class="text-success">
+                          {{ s.attendance ? s.attendance.filter(isMatch).length : 0 }}
+                        </td>
+
+                        <!-- Absent Status (Matches 'Absent') -->
+                        <td class="text-danger">
+                          {{ s.attendance ? s.attendance.filter(isAbsent).length : 0 }}
+                        </td>
+
+                        <!-- Late Status (Matches 'LPresent' / Late Present) -->
+                        <td class="text-warning">
+                          {{ s.attendance ? s.attendance.filter(isLate).length : 0 }}
+                        </td>
+
+                        <!-- None / Unmarked Status (Matches 'none') -->
+                        <td class="text-primary">
+                          {{ s.attendance ? s.attendance.filter(isNone).length : 0 }}
+                        </td>
+
                         <td>
-                          <div class="d-flex align-items-center gap-2">
-                            <span [ngClass]="{
-                      'text-success': s.Atsummary.present >= 90,
-                      'text-warning': s.Atsummary.present >= 80 && s.Atsummary.present < 90,
-                      'text-danger': s.Atsummary.present < 80
-                    }">
-                              {{ s.Atsummary.present }}%
-                            </span>
-                            <div class="progress flex-grow-1" style="height: 12px; position: relative;">
-                              <div class="progress-bar" [ngClass]="{
-                             'bg-success': s.Atsummary.present >= 90,
-                             'bg-warning': s.Atsummary.present >= 80 && s.Atsummary.present < 90,
-                             'bg-danger': s.Atsummary.present < 80
-                           }" role="progressbar" [style.width.%]="s.Atsummary.present">
-                                <span class="position-absolute w-100 text-center text-dark fw-bold"
-                                  style="font-size: 10px; left: 0;">{{ s.Atsummary.present }}%</span>
+                          <!-- 1. Compute the attendance percentage once as a local variable 'percentage' -->
+                          <ng-container
+                            *ngIf="(s.attendance?.length ? ((s.attendance.filter(isMatch).length / s.attendance.length) * 100) : 0) as percentage">
+
+                            <div class="d-flex align-items-center gap-2">
+                              <!-- 2. Dynamic Text Color based on our calculated percentage -->
+                              <span [ngClass]="{
+          'text-success': percentage >= 90,
+          'text-warning': percentage >= 80 && percentage < 90,
+          'text-danger': percentage < 80
+        }">
+                                {{ percentage | number:'1.2-2' }}%
+                              </span>
+
+                              <div class="progress flex-grow-1" style="height: 12px; position: relative;">
+                                <!-- 3. Dynamic Progress Bar Color and Width -->
+                                <div class="progress-bar" [ngClass]="{
+               'bg-success': percentage >= 90,
+               'bg-warning': percentage >= 80 && percentage < 90,
+               'bg-danger': percentage < 80
+             }" role="progressbar" [style.width.%]="percentage">
+
+                                  <!-- 4. Centered Floating Text Percent Label -->
+                                  <span class="position-absolute w-100 text-center text-dark fw-bold"
+                                    style="font-size: 10px; left: 0;">
+                                    {{ percentage | number:'1.2-2' }}%
+                                  </span>
+                                </div>
                               </div>
                             </div>
-                          </div>
+
+                          </ng-container>
                         </td>
+
 
                         @if(s.status == 'Active'){
                         <td class="text-end fs-6">
@@ -418,28 +448,60 @@
 
         <div class="d-flex justify-content-around text-center mb-3">
           <div>
-            <h5 class="text-success mb-0">{{ selectedStudentOV.Atsummary.present }}</h5>
+            <h5 class="text-success mb-0">{{ selectedStudentOV?.attendance ?
+              selectedStudentOV.attendance.filter(isMatch).length : 0 }}</h5>
             <small>Present</small>
           </div>
           <div>
-            <h5 class="text-danger mb-0">{{selectedStudentOV.Atsummary.absent}}</h5>
+            <h5 class="text-danger mb-0">{{ selectedStudentOV?.attendance ?
+              selectedStudentOV.attendance.filter(isAbsent).length : 0 }}</h5>
             <small>Absent</small>
           </div>
           <div>
-            <h5 class="text-warning mb-0">{{selectedStudentOV.Atsummary.late}}</h5>
+            <h5 class="text-warning mb-0">{{ selectedStudentOV?.attendance ?
+              selectedStudentOV.attendance.filter(isLate).length : 0 }}</h5>
             <small>Late</small>
           </div>
           <div>
-            <h5 class="text-primary mb-0">{{selectedStudentOV.Atsummary.none}}</h5>
+            <h5 class="text-primary mb-0">{{ selectedStudentOV?.attendance ?
+              selectedStudentOV.attendance.filter(isNone).length : 0 }}</h5>
             <small>Leave</small>
           </div>
         </div>
 
         <div class="mb-3">
-          <p class="mb-1 fw-semibold">Attendance Percentage <span class="float-end">75%</span></p>
-          <div class="progress" style="height: 8px;">
-            <div class="progress-bar bg-warning" role="progressbar" style="width: 75%;"></div>
-          </div>
+          <p class="mb-1 fw-semibold">Attendance Percentage </p>
+
+          <ng-container
+            *ngIf="(selectedStudentOV?.attendance?.length ? ((selectedStudentOV?.attendance.filter(isMatch).length / selectedStudentOV?.attendance.length) * 100) : 0) as percentage">
+
+            <div class="d-flex align-items-center gap-2">
+              <!-- 2. Dynamic Text Color based on our calculated percentage -->
+              <span [ngClass]="{
+          'text-success': percentage >= 90,
+          'text-warning': percentage >= 80 && percentage < 90,
+          'text-danger': percentage < 80
+        }">
+                {{ percentage | number:'1.2-2' }}%
+              </span>
+
+              <div class="progress flex-grow-1" style="height: 12px; position: relative;">
+                <!-- 3. Dynamic Progress Bar Color and Width -->
+                <div class="progress-bar" [ngClass]="{
+               'bg-success': percentage >= 90,
+               'bg-warning': percentage >= 80 && percentage < 90,
+               'bg-danger': percentage < 80
+             }" role="progressbar" [style.width.%]="percentage">
+
+                  <!-- 4. Centered Floating Text Percent Label -->
+                  <span class="position-absolute w-100 text-center text-dark fw-bold" style="font-size: 10px; left: 0;">
+                    {{ percentage | number:'1.2-2' }}%
+                  </span>
+                </div>
+              </div>
+            </div>
+
+          </ng-container>
         </div>
 
         <div>

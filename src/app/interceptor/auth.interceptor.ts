@@ -10,8 +10,13 @@ import { catchError, throwError } from 'rxjs';
 export const authInterceptor: HttpInterceptorFn = (req, next) => {
   const router = inject(Router);
   const token = typeof sessionStorage !== 'undefined' ? sessionStorage.getItem('token') : null;
-
-  if (token) {
+  const skipTokenUrls = [
+    '/sendMailToClient'
+  ];
+  const shouldSkipToken = skipTokenUrls.some(url =>
+    req.url.includes(url)
+  );
+  if (token && !shouldSkipToken) {
     req = req.clone({
       setHeaders: {
         Authorization: `Bearer ${token}`,

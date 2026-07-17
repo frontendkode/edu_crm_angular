@@ -154,20 +154,27 @@
               <div class="d-flex flex-column">
                 <h6 class="fw-bold mb-0">{{ s.course || 0}}</h6>
                 <small class="text-muted">{{ (s.shift +' - '+ s.startTime+'-'+s.endTime) || 0}}</small>
-                <small class="text-muted">{{ s.classStartDate + ' to ' + s.classEndDate || 0}}</small>
+                <small class="text-muted">{{ (s.classStartDate |date:'dd MMM yy') + ' to ' + (s.classEndDate|date:'dd
+                  MMM yy') || 0}}</small>
               </div>
             </td>
             <td>
               <div class="progress" style="height: 8px;">
-                <div class="progress-bar bg-success" role="progressbar" [style.width.%]="80"></div>
+                <div class="progress-bar bg-success" role="progressbar"
+                  [style.width.%]="s.attendance?.length ? (((s.attendance.filter(isMatch).length) / s.attendance.length) * 100) : 0">
+                </div>
               </div>
-              <small>{{ 80 }}%</small>
+              <small>{{
+                (s.attendance?.length ?
+                ((s.attendance.filter(isMatch).length) / s.attendance.length)
+                : 0)
+                | percent:'1.2-2'
+                }} </small>
             </td>
             <td [ngClass]="{'text-success': s.feeStatus === 'Paid', 'text-danger': s.feeStatus !== 'Paid'}">
               <div class="d-flex flex-column">
-                <h6 class="fw-bold mb-0">{{ s?.Fees?.totalFee - s?.Fees?.balanceFee +'/'+ s?.Fees?.totalFee || 0}}</h6>
-                <small class="text-muted">Due : {{ s?.Fees?.totalFee / s?.Fees?.split || 0 }}</small>
-                <small class="text-muted">{{ s?.Fees?.dueDates[0].dueDate || 0 }}</small>
+                <h6 class="fw-bold mb-0">{{ s?.balanceFee +'/'+ s?.totalFee || 0}}</h6>
+                <small class="text-muted">Due : {{ s?.dueDay.length || 0 }}</small>
               </div>
             </td>
             <td>
@@ -471,8 +478,8 @@
                   <p><b>Course Name:</b> {{ selectedStudentOverview?.course }}</p>
                   <p><b>Batch:</b> {{ selectedStudentOverview?.batch }} ({{ selectedStudentOverview?.shift }} - {{
                     selectedStudentOverview?.startTime }} to {{ selectedStudentOverview?.endTime }})</p>
-                  <p><b>Start Date:</b> {{ selectedStudentOverview?.classStartDate }}</p>
-                  <p><b>End Date:</b> {{ selectedStudentOverview?.classEndDate }}</p>
+                  <p><b>Start Date:</b> {{ selectedStudentOverview?.classStartDate |date:'dd MMM yy' }}</p>
+                  <p><b>End Date:</b> {{ selectedStudentOverview?.classEndDate |date:'dd MMM yy'}}</p>
                   <p><b>Status:</b> {{ selectedStudentOverview?.status }}</p>
                 </div>
               </div>
@@ -525,7 +532,7 @@
                   <tbody>
                     <tr *ngFor="let record of selectedStudentOverview?.attendance; let i = index">
                       <td>{{ i + 1 }}</td>
-                      <td>{{ record.date }}</td>
+                      <td>{{ record.date |date:'dd MMM yy' }}</td>
                       <td>{{ record.day }}</td>
 
                       <!-- Dropdown -->
@@ -569,8 +576,8 @@
                 <tbody>
                   <tr *ngFor="let due of selectedStudentOverview?.dueDay">
                     <td>{{ due.dueNo }}</td>
-                    <td>{{ due.dueDate }}</td>
-                    <td>{{ due.dueAmt }}</td>
+                    <td>{{ due.dueDate|date:'dd MMM yy' }}</td>
+                    <td>{{ due.dueAmt |currency:'INR':'symbol' }}</td>
                     <td>
                       {{due.status}} </td>
                     <td>

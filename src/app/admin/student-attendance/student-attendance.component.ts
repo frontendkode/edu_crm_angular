@@ -37,6 +37,12 @@ export class StudentAttendanceComponent implements OnInit {
     this.getAllStudents();
     this.getTodayAttendance();
   }
+  // Add these rules inside your component class
+  isMatch = (record: any) => ['Present', 'LPresent'].includes(record.attend);
+  isAbsent = (record: any) => record.attend === 'Absent';
+  isLate = (record: any) => record.attend === 'LPresent';
+  isNone = (record: any) => record.attend === 'none';
+
   getAllStudents() {
     this.api.getAllStudents().subscribe(
       (res) => {
@@ -127,7 +133,7 @@ export class StudentAttendanceComponent implements OnInit {
   // Chart Properties
   public doughnutChartData: ChartData<'doughnut'> = {
     labels: ['Present', 'Absent', 'Late'],
-    datasets: [{ data: [0, 0, 0], backgroundColor: ['#28a745', '#dc3545', '#ffc107'] }]
+    datasets: [{ data: [11, 20, 30], backgroundColor: ['#28a745', '#dc3545', '#ffc107'] }]
   };
   public doughnutChartType: ChartType = 'doughnut';
   public doughnutChartOptions: ChartConfiguration['options'] = {
