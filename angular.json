@@ -37,8 +37,7 @@
               "node_modules/aos/dist/aos.css",
               "src/styles.scss"
             ],
-            "scripts": [],
-            "prerender": true
+            "scripts": []
           },
           "configurations": {
             "production": {
