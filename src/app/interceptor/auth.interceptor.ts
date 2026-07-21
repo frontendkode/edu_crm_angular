@@ -44,16 +44,16 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
       if (error.status === 403) {
         // Access denied or account disabled
         if (typeof sessionStorage !== 'undefined') {
-          sessionStorage.clear();
+          // sessionStorage.clear();
         }
         if (typeof localStorage !== 'undefined') {
-          localStorage.clear();
+          // localStorage.clear();
         }
         if (typeof alert !== 'undefined') {
           alert(error.error?.message || 'Access denied. You have been logged out.');
         }
         if (typeof window !== 'undefined') {
-          router.navigate(['/']);
+          // router.navigate(['/']);
         }
       }
 

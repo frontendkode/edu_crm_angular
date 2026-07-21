@@ -46,7 +46,7 @@ export class StaffTaskComponent implements OnInit {
     return Object.values(stat)[0] as number;
   }
 
-  taskTypes = ['Follow Up', 'Counseling', 'Document Collection'];
+  taskTypes = ['Low', 'Medium', 'High'];
 
   staffList: any = [
 
@@ -165,8 +165,8 @@ export class StaffTaskComponent implements OnInit {
 
         // If Staff, filter tasks to only show assigned to them
         if (this.auth.isStaff()) {
-          const currentUserId = this.auth.getUserId();
-          allTasks = allTasks.filter((t: any) => t.staffId === currentUserId);
+          const currentUserName = this.auth.getUsername();
+          allTasks = allTasks.filter((t: any) => t.staffName == currentUserName);
         }
 
         this.taskList = allTasks;
@@ -189,7 +189,7 @@ export class StaffTaskComponent implements OnInit {
     }
 
     if (this.selectedType) {
-      filtered = filtered.filter(t => t.taskType === this.selectedType);
+      filtered = filtered.filter(t => t.priority === this.selectedType);
     }
 
     if (this.selectedStaff) {

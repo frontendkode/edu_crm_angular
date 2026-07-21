@@ -17,7 +17,7 @@ import { Router } from '@angular/router';
 export class LoginCreationComponent implements OnInit {
   loginForm: FormGroup;
   staticAdminKey = 'ADMIN123';
-  roles: string[] = ['Admin', 'Manager', 'User'];
+  roles: string[] = ['ADMIN', 'MANAGER', 'USER'];
 
   customRoleSelected = false;
 
@@ -73,8 +73,8 @@ export class LoginCreationComponent implements OnInit {
     let payLoad = {
       username: this.loginForm.get('username')?.value,
       password: this.loginForm.get('password')?.value,
-      role: this.loginForm.get('role')?.value
-    }
+      role: (this.loginForm.get('role')?.value || '').toString().trim().toUpperCase(),
+    };
     console.log(payLoad);
 
 

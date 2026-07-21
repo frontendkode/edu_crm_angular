@@ -26,7 +26,7 @@ export class UserManagementComponent implements OnInit {
         { key: '/staff-task', label: 'Task Management' },
         { key: '/settings', label: 'Settings' },
         { key: '/staff', label: 'Staff Management' },
-        { key: '/user-management', label: 'User Management' },
+        // { key: '/user-management', label: 'User Management' },
         { key: '/fees', label: 'Fees' },
         { key: '/students-attendance', label: 'Student Attendance' },
     ];
@@ -64,15 +64,18 @@ export class UserManagementComponent implements OnInit {
     loadUsers() {
         this.api.getAllUsers().subscribe({
             next: (res) => {
-                this.users = (res.responseObject || []).map((u: any) => {
-                    const staffId = u.staffId || u.staff_id;
-                    const staff = this.staffList.find(s => s.id === staffId);
-                    return {
-                        ...u,
-                        staffName: staff?.name || staff?.username || null,
-                        displayRoutes: this.normalizeAllowedRoutes(u.allowedRoutes || u.allowed_routes || []),
-                    };
-                });
+                this.users = (res.responseObject || [])
+                    .filter((i: any) => i.username !== 'Admin@dev')
+                    .map((u: any) => {
+                        const staffId = u.staffId || u.staff_id;
+                        const staff = this.staffList.find(s => s.id === staffId);
+                        return {
+                            ...u,
+                            staffName: staff?.name || staff?.username || null,
+                            displayRoutes: this.normalizeAllowedRoutes(u.allowedRoutes || u.allowed_routes || []),
+                        };
+                    });
+
             },
             error: (err) => {
                 console.log(err);
@@ -90,7 +93,12 @@ export class UserManagementComponent implements OnInit {
             role: user?.role || '',
             staffId: user?.staffId || user?.staff_id || '',
             enabled: user?.enabled !== false,
-            allowedRoutes: this.normalizeAllowedRoutes(user?.allowedRoutes || user?.allowed_routes || []),
+            allowedRoutes: this.isEditMode
+                ? this.normalizeAllowedRoutes(
+                    user?.allowedRoutes || user?.allowed_routes || []
+                )
+                : this.getDefaultAllowedRoutes(),
+            // allowedRoutes: this.normalizeAllowedRoutes(user?.allowedRoutes || user?.allowed_routes || []),
         });
 
         if (this.isEditMode) {
@@ -176,10 +184,27 @@ export class UserManagementComponent implements OnInit {
 
     private normalizeAllowedRoutes(routes: any): string[] {
         if (!routes) return [];
-        if (Array.isArray(routes)) return routes;
+        if (Array.isArray(routes)) {
+            return routes
+                .filter((route) => typeof route === 'string' && route.trim().length > 0)
+                .map((route) => route.trim());
+        }
         if (typeof routes === 'string') {
-            try { const parsed = JSON.parse(routes); return Array.isArray(parsed) ? parsed : []; } catch { return []; }
+            try {
+                const parsed = JSON.parse(routes);
+                return this.normalizeAllowedRoutes(parsed);
+            } catch {
+                return [];
+            }
         }
         return [];
+    }
+
+    private normalizeRole(role: any): string {
+        return typeof role === 'string' ? role.trim().toUpperCase() : '';
+    }
+
+    private getDefaultAllowedRoutes(): string[] {
+        return ['/dashboard'];
     }
 }

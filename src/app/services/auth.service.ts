@@ -54,6 +54,34 @@ export class AuthService {
     }
   }
 
+  private static readonly defaultAllowedRoutes = [
+    '/dashboard',
+    '/lead',
+    '/students',
+    '/staff-task',
+    '/fees',
+    '/students-attendance',
+  ];
+
+  private normalizeAllowedRoutes(value: any): string[] {
+    if (Array.isArray(value)) {
+      return value
+        .filter((route) => typeof route === 'string' && route.trim().length > 0)
+        .map((route) => route.trim());
+    }
+
+    if (typeof value === 'string') {
+      try {
+        const parsed = JSON.parse(value);
+        return this.normalizeAllowedRoutes(parsed);
+      } catch {
+        return [];
+      }
+    }
+
+    return [];
+  }
+
   login(encData: string): Observable<boolean> {
     return this.http
       .post(`${this.apiUrl}/api/auth/signIn2`, { username: null, password: null, encData }, { responseType: 'text' })
@@ -62,18 +90,18 @@ export class AuthService {
           const decrypted = this.cryptoService.decrypt(encryptedRes);
           if (decrypted?.responseObject?.jwtResponse) {
             const jwt = decrypted.responseObject.jwtResponse;
+            const allowedRoutes = this.normalizeAllowedRoutes(jwt.allowedRoutes);
+            const storedRoutes = allowedRoutes.length > 0 ? allowedRoutes : AuthService.defaultAllowedRoutes;
             if (this.isBrowser) {
               sessionStorage.setItem('isLoggedIn', 'true');
               sessionStorage.setItem('token', jwt.token);
               sessionStorage.setItem('username', JSON.stringify(jwt.username));
-              sessionStorage.setItem('role', JSON.stringify(jwt.role));
+              sessionStorage.setItem('role', JSON.stringify((jwt.role || '').toString().trim().toUpperCase()));
               sessionStorage.setItem('id', JSON.stringify(jwt.id));
               if (jwt.enabled !== undefined) {
                 sessionStorage.setItem('enabled', JSON.stringify(jwt.enabled));
               }
-              if (jwt.allowedRoutes !== undefined) {
-                sessionStorage.setItem('allowedRoutes', JSON.stringify(jwt.allowedRoutes));
-              }
+              sessionStorage.setItem('allowedRoutes', JSON.stringify(storedRoutes));
             }
             this._isLoggedIn.next(true);
             return true;

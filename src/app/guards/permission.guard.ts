@@ -19,8 +19,8 @@ export const permissionGuard: CanActivateFn = (route: ActivatedRouteSnapshot, st
     modulePath = `/${parts[0]}`;
   }
 
-  // allow admins
-  if (auth.isAdmin() || (auth.isSuperAdmin && auth.isSuperAdmin())) {
+  // allow admins and super admins
+  if (auth.isAdmin()) {
     return true;
   }
 

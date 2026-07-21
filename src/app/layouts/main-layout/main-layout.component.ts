@@ -28,15 +28,8 @@ export class MainLayoutComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    if (typeof localStorage !== "undefined") {
-      const userStr = localStorage.getItem("currentUser");
-      const user = userStr ? JSON.parse(userStr) : null;
-      this.username = user?.username || this.auth.getUsername() || "User";
-      this.roleTitle = user?.role || this.auth.getRole() || "Member";
-    } else {
-      this.username = this.auth.getUsername() || "User";
-      this.roleTitle = this.auth.getRole() || "Member";
-    }
+    this.username = this.auth.getUsername() || 'User';
+    this.roleTitle = this.auth.getRole() || 'Member';
     this.getCountNotification();
   }
 

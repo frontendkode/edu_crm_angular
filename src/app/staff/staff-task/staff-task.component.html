@@ -54,7 +54,7 @@
       <!-- Pending Column -->
       <div class="kanban-column" id="todo" cdkDropList [cdkDropListData]="todo" (cdkDropListDropped)="drop($event)">
         <div class="column-header">
-          <h5><i class="fas fa-circle text-secondary"></i> To Do</h5>
+          <h5><i class="fas fa-circle text-secondary"></i> Pending</h5>
           <span class="badge">{{todo.length}}</span>
         </div>
 
@@ -86,7 +86,7 @@
               Overdue
             </div>
             <small *ngIf="!isOverdue(task?.dueDate)" class="text-muted k-fs-s">
-              <i class="far fa-calendar-alt"></i> {{ task?.dueDate }}
+              <i class="far fa-calendar-alt"></i> {{ task?.dueDate |date }}
             </small>
           </div>
         </div>
@@ -105,7 +105,7 @@
       <div class="kanban-column" id="inProgress" cdkDropList [cdkDropListData]="inProgress"
         (cdkDropListDropped)="drop($event)">
         <div class="column-header">
-          <h5><i class="fas fa-circle text-primary"></i> Active</h5>
+          <h5><i class="fas fa-circle text-primary"></i> In Progress</h5>
           <span class="badge">{{inProgress.length}}</span>
         </div>
 
@@ -138,7 +138,7 @@
               Overdue
             </div>
             <small *ngIf="!isOverdue(task?.dueDate)" class="text-muted k-fs-s">
-              <i class="far fa-calendar-alt"></i> {{ task?.dueDate }}
+              <i class="far fa-calendar-alt"></i> {{ task?.dueDate|date }}
             </small>
           </div>
         </div>
@@ -146,7 +146,7 @@
           <div class="empty-icon-wrapper">
             <mat-icon>bolt</mat-icon>
           </div>
-          <h6>Nothing active</h6>
+          <h6>Nothing</h6>
           <p class="text-muted k-fs-s">Start something new</p>
         </div>
       </div>
@@ -155,7 +155,7 @@
       <div class="kanban-column" id="completed" cdkDropList [cdkDropListData]="completed"
         (cdkDropListDropped)="drop($event)">
         <div class="column-header">
-          <h5><i class="fas fa-circle text-success"></i> Done</h5>
+          <h5><i class="fas fa-circle text-success"></i> On Review</h5>
           <span class="badge">{{completed.length}}</span>
         </div>
 
@@ -180,7 +180,7 @@
               <small class="text-muted k-fs-s">{{ task?.staffName }}</small>
             </div>
             <small class="text-muted k-fs-s">
-              <i class="far fa-calendar-check"></i> {{ task?.dueDate }}
+              <i class="far fa-calendar-check"></i> {{ task?.dueDate|date }}
             </small>
           </div>
         </div>
@@ -194,10 +194,10 @@
       </div>
 
       <!-- Submitted Column -->
-      <div class="kanban-column" id="submitted" cdkDropList [cdkDropListData]="submitted"
+      <div class="kanban-column" id="submitted" cdkDropList [cdkDropListData]="submitted" *ngIf="auth.isAdmin()"
         (cdkDropListDropped)="drop($event)">
         <div class="column-header">
-          <h5><i class="fas fa-circle text-warning"></i> Archive</h5>
+          <h5><i class="fas fa-circle text-warning"></i> Completed</h5>
           <span class="badge">{{submitted.length}}</span>
         </div>
 
