@@ -165,8 +165,8 @@ export class StaffTaskComponent implements OnInit {
 
         // If Staff, filter tasks to only show assigned to them
         if (this.auth.isStaff()) {
-          const currentUserName = this.auth.getUsername();
-          allTasks = allTasks.filter((t: any) => t.staffName == currentUserName);
+          const currentstaffId = this.auth.getStaffId();
+          allTasks = allTasks.filter((t: any) => t.staffId == currentstaffId);
         }
 
         this.taskList = allTasks;

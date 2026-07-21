@@ -52,7 +52,6 @@ export class StudentsComponent implements OnInit {
   }
 
   calculateStudentStats(students: any[]) {
-    debugger
     this.totalStudents = students.length;
 
     this.activeStudents = students.filter(s => s.status === 'Active');
@@ -244,7 +243,6 @@ export class StudentsComponent implements OnInit {
         `${this.studentForm.get('batch')?.value.toUpperCase()}${this.studentsDataSource.data.length + 1
         }`
       );
-    debugger
     let payLoad = this.studentForm.getRawValue()
     payLoad.balanceFee = String(payLoad.balanceFee)
     this.api.createStudents(payLoad).subscribe(

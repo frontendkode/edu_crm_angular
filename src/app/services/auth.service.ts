@@ -34,11 +34,11 @@ export class AuthService {
 
   private initializeAuthState() {
     if (!this.isBrowser) return;
-    
+
     // Check if sessionStorage is empty but isLoggedIn is set - clear everything
     const isLoggedInFlag = sessionStorage.getItem('isLoggedIn');
     const token = sessionStorage.getItem('token');
-    
+
     if (isLoggedInFlag === 'true' && !token) {
       // Stale login state detected - clear everything
       sessionStorage.removeItem('isLoggedIn');
@@ -93,9 +93,11 @@ export class AuthService {
             const allowedRoutes = this.normalizeAllowedRoutes(jwt.allowedRoutes);
             const storedRoutes = allowedRoutes.length > 0 ? allowedRoutes : AuthService.defaultAllowedRoutes;
             if (this.isBrowser) {
+
               sessionStorage.setItem('isLoggedIn', 'true');
               sessionStorage.setItem('token', jwt.token);
               sessionStorage.setItem('username', JSON.stringify(jwt.username));
+              sessionStorage.setItem('staffId', JSON.stringify(jwt.staffId));
               sessionStorage.setItem('role', JSON.stringify((jwt.role || '').toString().trim().toUpperCase()));
               sessionStorage.setItem('id', JSON.stringify(jwt.id));
               if (jwt.enabled !== undefined) {
@@ -159,6 +161,11 @@ export class AuthService {
   getUsername(): string {
     if (!this.isBrowser) return '';
     const username = sessionStorage.getItem('username');
+    return username ? JSON.parse(username) : '';
+  }
+  getStaffId(): string {
+    if (!this.isBrowser) return '';
+    const username = sessionStorage.getItem('staffId');
     return username ? JSON.parse(username) : '';
   }
 
